@@ -1,0 +1,24 @@
+FROM ubuntu:latest
+MAINTAINER roopesht "roopesh@arthasangraha.com"
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+  && apt-get install -y python3.8 python3-pip \
+  && apt-get install -y  nano\
+  && cd /usr/local/bin \
+  && ln -s /usr/bin/python3.8 python \
+  && pip3 --no-cache-dir install --upgrade pip \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN pip install flask
+
+cmd ("mkdir",  "/app")
+ADD app.py /app/
+ADD uwsgi.ini /app/
+
+
+ENTRYPOINT ["sh", "-c", "echo $port && python /app/app.py" ]
+
+#CMD [ "python", "/app/app.py" ]
+
